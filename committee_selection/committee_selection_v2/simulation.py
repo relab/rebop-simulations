@@ -10,11 +10,11 @@ class Simulation:
 
         self.block_chain = []
         self.pool = [] # A list of all the processes that are part of the network
-        self.list_of_committees = []
         self.com_counter = 0
+        self.reward_pool = 100
 
-        self.T = T #number of rounds, last T number of rounds used to calculate reputation
-        self.c = c # Number of rounds before new committe is selected
+        self.T = T  # number of rounds, last T number of rounds used to calculate reputation
+        self.c = c  # Number of rounds before new committe is selected
 
         self.H = 100
         self.alpha = alpha
@@ -24,36 +24,22 @@ class Simulation:
         for x in range(0, self.pool_size):
             self.pool.append(Process(len(self.pool), 1, 1, 0))
 
-    def distribute_reward(self):
-        pass
+    def distribute_reward(self, block, committee):
+        for validator in block.signatures:
+            validator.t_reward += self.reward_pool/(len(block.signatures))
+        committee.leader.t_reward += ((self.reward_pool*5)/100)
 
     def one_round(self): # assume for now that new committee is selected for each new round
         com = Committee(self.com_counter, self.committe_size, self.pool)
-        # if len(self.block_chain) > 1:
+        com.choose_leader_random()
         block = com.leader.propose_block(self.block_chain)
+        com.choose_committee_random()
         for validator in com.committee:
-            if validator.type == 1: # correct
-                validator.correct_validator(block)
+            validator.voting(block)
 
-            elif validator.type == 2: # Colluding
-                validator.colluding_validator(block)
+        com.leader.leader_vote_collection(block, self.committe_size, self.block_chain)
 
-            elif validator.type == 3: # byzantine
-                pass
-
-        if com.leader.type == 1:
-            com.leader.correct_leader(block)
-            if block.isConfirmed(self.committe_size):
-                self.block_chain.append(block)
-
-        elif com.leader.type == 2:
-            com.leader.colluding_leader(block)
-
-
-        elif com.leader.type == 3:
-            pass
-
-
+        self.distribute_reward(block, com)
         self.com_counter += 1
 
 
