@@ -52,12 +52,13 @@ class Process:
             pass
 
     def correct_leader(self, pre_block):
-        block.signatures = pre_block.initial_voters
+        pre_block.signatures = pre_block.initial_voters
 
     def colluding_leader(self, pre_block, committe_size):
         all_removed = 0
         limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
-        for voter in pre_block.initial_voters:
+        temp = sorted(pre_block.initial_voters, key=lambda v: v.total_reward, reverse=True)  # sorts list of init_voters by total_reward earned, descending
+        for voter in temp:
             if self.group == voter.group:
                 pre_block.signatures.append(voter)
             else:
@@ -83,3 +84,6 @@ class Process:
 
         #if pre_block.isConfirmed(committe_size):  # TODO: fix this, when do i append a blcok to the blockchain
          #   block_chain.append(block)
+
+temp = sorted(pre_block.signatures, key=lambda x: x.stake, reverse=True)
+        count = 0
