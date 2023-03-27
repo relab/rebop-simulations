@@ -31,10 +31,10 @@ class Process:
         block.initial_voters.append(self)
 
     def colluding_validator(self, block):
-        if self.group != block.proposer.group:
+        if self.group != block.proposer.group: # correct
             if self.id % 2 == 0:
                 block.initial_voters.append(self)
-        else: # always votes for block proposed by process in the same (colluding) group
+        else: # always votes for block proposed by process in the same (colluding) group # TODO: look at it...
             block.initial_voters.append(self)
 
     def byzantine_validator(self, block):
@@ -84,6 +84,3 @@ class Process:
 
         #if pre_block.isConfirmed(committe_size):  # TODO: fix this, when do i append a blcok to the blockchain
          #   block_chain.append(block)
-
-temp = sorted(pre_block.signatures, key=lambda x: x.stake, reverse=True)
-        count = 0

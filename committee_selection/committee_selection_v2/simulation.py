@@ -4,7 +4,7 @@ from committee import Committee
 from process import Process
 
 
-class Simulation:
+class Simulation: # Todo: take in rep calc from somewhere else,
     def __init__(self, pool_size, committe_size, t_rounds=0, T=0, c=0, alpha=1, rho=0):
         self.pool_size = pool_size # total number of processes committe is choosen from, pool size
         self.committe_size = committe_size
@@ -44,11 +44,11 @@ class Simulation:
             for p in self.pool:
                 p.comm_rep = (p.voted/p.voting_opportunities)  # * self.H,
 
-            reputation = [p.comm_rep*self.H for p in self.pool]  # Todo: need to exclude current leader
+            reputation = [p.comm_rep*self.H for p in self.pool]
             committee = random.choices(self.pool, weights=reputation, k=100)
             return committee
 
-    def leader_reputation(self):
+    def leader_reputation(self): # TODO: dynmaic, make
         for p in self.pool:
             p.lead_rep = 1
             p.proposer_count = 0
@@ -70,7 +70,7 @@ class Simulation:
             validator.t_reward += self.reward_pool/(len(block.signatures))
         committee.leader.t_reward += ((self.reward_pool*5)/100)
 
-    def one_round(self): # assume for now that new committee is selected for each new round
+    def one_round(self): # assume for now that new committee is selected for each new round TODO:
         leader = self.leader_reputation()
         committee = self.committee_reputation()  # TODO: find a way to make sure leader not selceted as com em
         com = Committee(self.com_counter, self.committe_size, leader, committee)  # TODO: fiks committe class params
@@ -84,7 +84,7 @@ class Simulation:
 
         com.leader.leader_vote_collection(self.committe_size, self.block_chain)
 
-        self.distribute_reward(block, com)
+        self.distribute_reward(block, com) # should distribute for h-1 not current proposed block, so preblock not block
         self.com_counter += 1
 
 
