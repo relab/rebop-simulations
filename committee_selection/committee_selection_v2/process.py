@@ -41,7 +41,7 @@ class Process:
         pass
 
 
-    def voting(self, block):
+    def voting(self, block): # they vote on the current block h
         if self.type == 1:  # correct
             self.correct_validator(block)
 
@@ -51,34 +51,35 @@ class Process:
         elif self.type == 3:  # byzantine
             pass
 
-    def correct_leader(self, block):
-        block.signatures = block.initial_voters
+    def correct_leader(self, pre_block):
+        block.signatures = pre_block.initial_voters
 
-    def colluding_leader(self, block, committe_size):
+    def colluding_leader(self, pre_block, committe_size):
         all_removed = 0
-        limit = (math.floor(committe_size/3)) - (committe_size - len(block.initial_voters))  # should be len(committee)
-        for voter in block.initial_voters:
+        limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
+        for voter in pre_block.initial_voters:
             if self.group == voter.group:
-                block.signatures.append(voter)
+                pre_block.signatures.append(voter)
             else:
                 if all_removed < limit:  # need to add in sorting of the list of voters based on stake
                     all_removed += 1
                     continue
                 else:
-                    block.signatures.append(voter)
+                    pre_block.signatures.append(voter)
 
-    def byzantine_leader(self, block, committe_size):
+    def byzantine_leader(self, pre_block, committe_size):
         pass
 
-    def leader_vote_collection(self, block, committe_size, block_chain):
+    def leader_vote_collection(self, committe_size, block_chain): # leader "confirms" block h-1, pre_block
+        pre_block = block_chain[len(block_chain) - 1]
         if self.type == 1:
-            self.correct_leader(block)
+            self.correct_leader(pre_block)
 
         elif self.type == 2:
-            self.colluding_leader(block, committe_size)
+            self.colluding_leader(committe_size, pre_block)
 
         elif self.type == 3:
-            self.byzantine_leader(block, committe_size)
+            self.byzantine_leader(committe_size, pre_block)
 
-        if block.isConfirmed(committe_size):
-            block_chain.append(block)
+        #if pre_block.isConfirmed(committe_size):  # TODO: fix this, when do i append a blcok to the blockchain
+         #   block_chain.append(block)

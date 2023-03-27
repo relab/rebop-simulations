@@ -71,16 +71,18 @@ class Simulation:
         committee.leader.t_reward += ((self.reward_pool*5)/100)
 
     def one_round(self): # assume for now that new committee is selected for each new round
-        com = Committee(self.com_counter, self.committe_size, self.pool)  # TODO: fiks committe class params
-        com.choose_leader_random()
-        com.choose_committee_random()
+        leader = self.leader_reputation()
+        committee = self.committee_reputation()  # TODO: find a way to make sure leader not selceted as com em
+        com = Committee(self.com_counter, self.committe_size, leader, committee)  # TODO: fiks committe class params
+        # com.choose_leader_random()
+        # com.choose_committee_random()
         block = com.leader.propose_block(self.block_chain)
         block.committee_at_block = com.committee
 
         for validator in com.committee:
             validator.voting(block)
 
-        com.leader.leader_vote_collection(block, self.committe_size, self.block_chain)
+        com.leader.leader_vote_collection(self.committe_size, self.block_chain)
 
         self.distribute_reward(block, com)
         self.com_counter += 1

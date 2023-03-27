@@ -3,13 +3,12 @@ from simulation import Simulation
 
 
 class Committee:
-    def __init__(self, committee_id, committee_size, pool:list):
+    def __init__(self, committee_id, committee_size: int, leader, committee: list):
         self.c_id = committee_id
         self. committee_size = committee_size
-        self.pool = pool
 
-        self.committee = []
-        self.leader = None
+        self.committee = committee
+        self.leader = leader
 
 
     # maybe put both methods in constructor/make them return/put them in  sim class?
