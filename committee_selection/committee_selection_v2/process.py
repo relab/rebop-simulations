@@ -7,16 +7,19 @@ class Process:
     def __init__(self, id, type, group, target):
         self.id = id
         self.type = type
-        self.total_reward = 0.0
         self.group = group
         self.target = target
 
         self.proposed_blocks = []
         self.last_block_proposed = 0 # the id of the last block proposed
+        self.proposer_count = 0 # how many times it proposed a block in last T
+
+        self.voting_opportunities = 0  # For last T
+        self.voted = 0  # For last T
 
         self.comm_rep = 0.0
         self.lead_rep = 0.0
-        self.t_reward = 0  # stake
+        self.total_reward = 0  # stake
 
     def propose_block(self, blocks):
         r = random.randint(0, 100)
@@ -31,7 +34,7 @@ class Process:
         if self.group != block.proposer.group:
             if self.id % 2 == 0:
                 block.initial_voters.append(self)
-        else:
+        else: # always votes for block proposed by process in the same (colluding) group
             block.initial_voters.append(self)
 
     def byzantine_validator(self, block):
@@ -39,27 +42,27 @@ class Process:
 
 
     def voting(self, block):
-        if self.type == 1: # correct
+        if self.type == 1:  # correct
             self.correct_validator(block)
 
-        elif self.type == 2: # Colluding
+        elif self.type == 2:  # colluding
             self.colluding_validator(block)
 
-        elif self.type == 3: # byzantine
+        elif self.type == 3:  # byzantine
             pass
 
     def correct_leader(self, block):
         block.signatures = block.initial_voters
 
     def colluding_leader(self, block, committe_size):
-        t_removed = 0
-        limit = (math.floor(committe_size/3)) - (committe_size - len(block.initial_voters))
+        all_removed = 0
+        limit = (math.floor(committe_size/3)) - (committe_size - len(block.initial_voters))  # should be len(committee)
         for voter in block.initial_voters:
             if self.group == voter.group:
                 block.signatures.append(voter)
             else:
-                if t_removed < limit:
-                    t_removed += 1
+                if all_removed < limit:  # need to add in sorting of the list of voters based on stake
+                    all_removed += 1
                     continue
                 else:
                     block.signatures.append(voter)
