@@ -6,7 +6,7 @@ class Block:
         self.signatures = []
         self.numberOfSignatures = 0 #Number of initial_voters
         self.proposer = proposer # id of Proposer/leader who proposed the block
-        self.committee_at_block = None  # committe that was assigned to vote on block, dict with vote/not_vote? list
+        self.committee_at_block = []  # committe that was assigned to vote on block, dict with vote/not_vote? list
         # for now
         self.exNum = 0  # Number of validators who signed the block, but got excluded, have to think more about how
                         # to find these, how to distinguish between all initial_voters, and those who got their votes excluded

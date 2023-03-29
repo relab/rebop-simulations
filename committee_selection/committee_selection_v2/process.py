@@ -27,6 +27,27 @@ class Process:
         self.proposed_blocks.append(b)
         return b
 
+    def voting(self, block): # they vote on the current block h
+        if self.type == 1:  # correct
+            self.correct_validator(block)
+
+        elif self.type == 2:  # colluding
+            self.colluding_validator(block)
+
+        elif self.type == 3:  # byzantine
+            pass
+
+    def leader_vote_collection(self, committe_size, block_chain): # leader "confirms" block h-1, pre_block
+        pre_block = block_chain[len(block_chain) - 1]
+        if self.type == 1:
+            self.correct_leader(pre_block)
+
+        elif self.type == 2:
+            self.colluding_leader(committe_size, pre_block)
+
+        elif self.type == 3:
+            self.byzantine_leader(committe_size, pre_block)
+
     def correct_validator(self, block):
         block.initial_voters.append(self)
 
@@ -39,17 +60,6 @@ class Process:
 
     def byzantine_validator(self, block):
         pass
-
-
-    def voting(self, block): # they vote on the current block h
-        if self.type == 1:  # correct
-            self.correct_validator(block)
-
-        elif self.type == 2:  # colluding
-            self.colluding_validator(block)
-
-        elif self.type == 3:  # byzantine
-            pass
 
     def correct_leader(self, pre_block):
         pre_block.signatures = pre_block.initial_voters
@@ -70,18 +80,6 @@ class Process:
 
     def byzantine_leader(self, pre_block, committe_size):
         pass
-
-    def leader_vote_collection(self, committe_size, block_chain): # leader "confirms" block h-1, pre_block
-        pre_block = block_chain[len(block_chain) - 1]
-        if self.type == 1:
-            self.correct_leader(pre_block)
-
-        elif self.type == 2:
-            self.colluding_leader(committe_size, pre_block)
-
-        elif self.type == 3:
-            self.byzantine_leader(committe_size, pre_block)
-
 
     def __str__(self):
         return f"ID: {self.id}, type: {self.type}, group: {self.group} Total Reward: {self.total_reward}"
