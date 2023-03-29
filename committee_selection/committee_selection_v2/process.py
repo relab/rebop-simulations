@@ -21,9 +21,9 @@ class Process:
         self.lead_rep = 0.0
         self.total_reward = 0  # stake
 
-    def propose_block(self, blocks):
+    def propose_block(self, block_chain):
         r = random.randint(0, 100)
-        b = Block(len(blocks), r, self)
+        b = Block(len(block_chain), r, self)
         self.proposed_blocks.append(b)
         return b
 
@@ -82,5 +82,6 @@ class Process:
         elif self.type == 3:
             self.byzantine_leader(committe_size, pre_block)
 
-        #if pre_block.isConfirmed(committe_size):  # TODO: fix this, when do i append a blcok to the blockchain
-         #   block_chain.append(block)
+
+    def __str__(self):
+        return f"ID: {self.id}, type: {self.type}, group: {self.group} Total Reward: {self.total_reward}"

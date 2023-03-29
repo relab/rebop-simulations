@@ -1,5 +1,5 @@
 import random
-from simulation import Simulation
+
 
 
 class Committee:
@@ -13,15 +13,16 @@ class Committee:
 
     # maybe put both methods in constructor/make them return/put them in  sim class?
     def choose_leader_random(self):
-        self.leader = random.choice(self.pool)
+        self.leader = random.choice(self.pool)  # TODO: change this to be in line with new design
 
     def choose_committee_random(self):
         new_committee = []
         while len(new_committee) < self.committee_size:
-            potential_member = random.choice(self.pool)
+            potential_member = random.choice(self.pool)  # TODO: change this to be in line with new design
             if (potential_member in new_committee) or (potential_member is self.leader):
                 continue
             else:
                 new_committee.append(potential_member)
         self.committee = new_committee
+
 
