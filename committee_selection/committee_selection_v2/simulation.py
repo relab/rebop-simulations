@@ -18,23 +18,16 @@ class Simulation:
         self.reward_pool = 100
 
         self.T = T  # number of relevant rounds, last T number of rounds used to calculate reputation
-        self.c = c  # Number of rounds before new committee is selected
+        # self.c = c  # Number of rounds before new committee is selected
 
         self.H = 100
         self.alpha = alpha
         self.rho = rho
 
-        # pool is populated
-        for x in range(0, 15):
-            self.pool.append(Process(len(self.pool), 1, 1, 0))
-        for x in range(0, 5):
-            self.pool.append(Process(len(self.pool), 2, 2, 0))
-
-
-    def one_round(self):
+    def one_round_v2(self):
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # rep
         if len(self.block_chain) > 1:
-            committee = committee_reputation(self.pool, self.block_chain, self.T, self.H)  # rep
+            committee = committee_reputation(self.pool, self.committee_size, self.block_chain, self.T, self.H)  # rep
         else:
             committee = choose_committee_random(self.committee_size, self.pool)
 
@@ -43,8 +36,8 @@ class Simulation:
         block = leader.propose_block(self.block_chain)  # committee leader proposes block
         block.committee_at_block = committee
 
-        for validator in committee:  # committee members vote
-            validator.voting(block)
+        for voters in committee:  # committee members vote
+            voters.voting(block)
 
         if len(block.initial_voters) >= (2*math.floor(self.committee_size/3)):  # checking if the enough com. members voted
             self.block_chain.append(block)
@@ -63,8 +56,6 @@ class Simulation:
     def one_round_rebop(self):  # no reputation, no committee selection, used to test
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # random leader
         committee = self.pool  # constant committee, original rebop
-        # TODO: need to exclude leader from being in the committee...
-        #       leader cannot/shouldnt be able to vote on the block he proposed...
 
         # com = Committee(self.com_counter, self.committee_size, leader, committee)
 
@@ -125,10 +116,16 @@ class Simulation:
 
 
 if __name__ == '__main__':
-    s1 = Simulation(20, 20, 100000)   # assume for now that new committee is selected for each new round
+
+    # Committe selection (v2)
+    s1 = Simulation(20, 10, 100000)   # assume for now that new committee is selected for each new round
+    for x in range(0, 17):
+        s1.pool.append(Process(len(s1.pool), 1, 1, 0))
+    for x in range(0, 3):
+        s1.pool.append(Process(len(s1.pool), 2, 2, 0))
     for r in range(s1.total_rounds):
-        s1.one_round_rebop()
-    print(f"After {s1.total_rounds} rounds")
+        s1.one_round_v2()
+    print(f"Committee selection (v2): After {s1.total_rounds} rounds")
     print("-------------")
     for p in s1.pool:
         print(p)
@@ -136,3 +133,26 @@ if __name__ == '__main__':
     for p in s1.pool:
         all_rewards += p.total_reward
     print(all_rewards/s1.total_rounds)
+    print()
+
+
+
+    # Rebop
+    s2 = Simulation(20, 20, 100000)   # assume for now that new committee is selected for each new round
+
+    for x in range(0, 17):
+        s2.pool.append(Process(len(s2.pool), 1, 1, 0))
+    for x in range(0, 3):
+        s2.pool.append(Process(len(s2.pool), 2, 2, 0))
+
+    for r in range(s1.total_rounds):
+        s1.one_round_rebop()
+    print(f"Rebop: After {s1.total_rounds} rounds")
+    print("-------------")
+    for p in s1.pool:
+        print(p)
+    all_rewards = 0
+    for p in s1.pool:
+        all_rewards += p.total_reward
+    print(all_rewards/s1.total_rounds)
+

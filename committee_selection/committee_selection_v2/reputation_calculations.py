@@ -1,15 +1,15 @@
 import random
 
 
-def committee_reputation(pool, block_chain, T, H):
+def committee_reputation(pool, committee_size, block_chain, T, H):
     for p in pool:
         p.comm_rep = 1
         p.voting_opportunities = 0
         p.voted = 0
-    start = len(block_chain)-1
+    start = len(block_chain)-2 # TODO: -1 or -2????
     end = len(block_chain)-T
 
-    for i in range(start, end, -1):  # TODO: -1 or -2????
+    for i in range(start, end, -1):
         if i < 0:
             break
         for com_member in block_chain[i].committee_at_block:
@@ -23,7 +23,7 @@ def committee_reputation(pool, block_chain, T, H):
             p.comm_rep = (p.voted/p.voting_opportunities)  # * self.H,
 
     reputation = [p.comm_rep*H for p in pool]
-    committee = random.choices(pool, weights=reputation, k=100)
+    committee = random.choices(pool, weights=reputation, k=committee_size)
     return committee
 
 
