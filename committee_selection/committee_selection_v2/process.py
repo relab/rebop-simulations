@@ -11,8 +11,8 @@ class Process:
         self.target = target
 
         self.proposed_blocks = []
-        self.last_block_proposed = 0 # the id of the last block proposed
-        self.proposer_count = 0 # how many times it proposed a block in last T
+        self.last_block_proposed = 0  # the id of the last block proposed
+        self.proposer_count = 0  # how many times it proposed a block in last T
 
         self.voting_opportunities = 0  # For last T
         self.voted = 0  # For last T
@@ -27,7 +27,7 @@ class Process:
         self.proposed_blocks.append(b)
         return b
 
-    def voting(self, block): # they vote on the current block h
+    def voting(self, block):  # they vote on the current block h
         if self.type == 1:  # correct
             self.correct_validator(block)
 
@@ -37,13 +37,13 @@ class Process:
         elif self.type == 3:  # byzantine
             pass
 
-    def leader_vote_collection(self, committe_size, block_chain): # leader "confirms" block h-1, pre_block
-        pre_block = block_chain[len(block_chain) - 1]
+    def leader_vote_collection(self, committe_size: int, block_chain):  # leader "confirms" block h-1, pre_block
+        pre_block = block_chain[len(block_chain) - 2]
         if self.type == 1:
             self.correct_leader(pre_block)
 
         elif self.type == 2:
-            self.colluding_leader(committe_size, pre_block)
+            self.colluding_leader(pre_block, committe_size)
 
         elif self.type == 3:
             self.byzantine_leader(committe_size, pre_block)
@@ -53,9 +53,9 @@ class Process:
 
     def colluding_validator(self, block):
         if self.group != block.proposer.group: # correct
-            if self.id % 2 == 0:
+            if random.randint(1, 2) == 1:
                 block.initial_voters.append(self)
-        else: # always votes for block proposed by process in the same (colluding) group # TODO: look at it...
+        else:  # always votes for block proposed by process in the same (colluding) group # TODO: look at it...
             block.initial_voters.append(self)
 
     def byzantine_validator(self, block):
