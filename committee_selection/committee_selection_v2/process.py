@@ -52,14 +52,15 @@ class Process:
         block.initial_voters.append(self)
 
     def colluding_validator(self, block):
-        if self.group != block.proposer.group: # correct
+        if self.group != block.proposer.group: # colluding
             if random.randint(1, 2) == 1:
                 block.initial_voters.append(self)
         else:  # always votes for block proposed by process in the same (colluding) group # TODO: look at it...
             block.initial_voters.append(self)
 
     def byzantine_validator(self, block):
-        pass
+        if self.target != block.proposer.group:  # byzantine
+            block.initial_voters.append(self)
 
     def correct_leader(self, pre_block):
         pre_block.signatures = pre_block.initial_voters
@@ -79,7 +80,18 @@ class Process:
                     pre_block.signatures.append(voter)
 
     def byzantine_leader(self, pre_block, committe_size):
-        pass
+        all_removed = 0
+        limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
+        temp = sorted(pre_block.initial_voters, key=lambda v: v.total_reward, reverse=True)  # sorts list of init_voters by total_reward earned, descending
+        for voter in temp:
+            if self.target != voter.group:
+                pre_block.signatures.append(voter)
+            else:
+                if all_removed < limit:  # need to add in sorting of the list of voters based on stake
+                    all_removed += 1
+                    continue
+                else:
+                    pre_block.signatures.append(voter)
 
     def __str__(self):
         return f"ID: {self.id}, type: {self.type}, group: {self.group} Total Reward: {self.total_reward}"
