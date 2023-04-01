@@ -18,7 +18,7 @@ class Simulation:
         self.reward_pool = 100
 
         self.T = T  # number of relevant rounds, last T number of rounds used to calculate reputation
-        # self.c = c  # Number of rounds before new committee is selected
+        # self.c = c  # Number of rounds before new committee is selected, 
 
         self.H = 100
         self.alpha = alpha
@@ -55,7 +55,7 @@ class Simulation:
 
     def one_round_rebop(self):  # no reputation, no committee selection, used to test
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # random leader
-        committee = self.pool  # constant committee, original rebop
+        committee = choose_committee_random(self.committee_size, self.pool)   # constant committee, original rebop
 
         # com = Committee(self.com_counter, self.committee_size, leader, committee)
 
@@ -138,21 +138,21 @@ if __name__ == '__main__':
 
 
     # Rebop
-    s2 = Simulation(20, 20, 100000)   # assume for now that new committee is selected for each new round
+    s2 = Simulation(20, 10, 100000)   # assume for now that new committee is selected for each new round
 
     for x in range(0, 17):
         s2.pool.append(Process(len(s2.pool), 1, 1, 0))
     for x in range(0, 3):
         s2.pool.append(Process(len(s2.pool), 2, 2, 0))
 
-    for r in range(s1.total_rounds):
-        s1.one_round_rebop()
-    print(f"Rebop: After {s1.total_rounds} rounds")
+    for r in range(s2.total_rounds):
+        s2.one_round_rebop()
+    print(f"Rebop: After {s2.total_rounds} rounds")
     print("-------------")
-    for p in s1.pool:
+    for p in s2.pool:
         print(p)
     all_rewards = 0
-    for p in s1.pool:
+    for p in s2.pool:
         all_rewards += p.total_reward
-    print(all_rewards/s1.total_rounds)
+    print(all_rewards/s2.total_rounds)
 
