@@ -40,7 +40,7 @@ list of initial_voters. the voters recorded in signatures get their portion of t
 reputation_calculation.py
 
 the calculation for leader reputation is done in the leader_reputation function, it takes in the pool of processes among
-other things, and return a leader (process object) works the same as arians roiginal rebop
+other things, and return a leader (process object) works the same as arians original rebop
 
 the calculation/selection of committee members based on reputation is done by the committee_reputation function. It also
 takes in a pool of processes (a list) among other things, and return a committee chosen based on reputation (a list)

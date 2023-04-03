@@ -1,4 +1,5 @@
 import math
+from timeit import default_timer as timer
 # import random
 
 # from committee import Committee
@@ -7,7 +8,7 @@ from reputation_calculations import committee_reputation, leader_reputation, cho
 
 
 class Simulation:
-    def __init__(self, pool_size, committee_size, t_rounds=1, T=1, c=0, alpha=1, rho=0):
+    def __init__(self, pool_size, committee_size, t_rounds, T, c=0, alpha=1, beta=1, rho=0):
         self.pool_size = pool_size  # total number of processes committee is choosen from, pool size
         self.committee_size = committee_size
         self.total_rounds = t_rounds
@@ -21,13 +22,15 @@ class Simulation:
         # self.c = c  # Number of rounds before new committee is selected, 
 
         self.H = 100
-        self.alpha = alpha
+        self.alpha = alpha  # for leader rep.
+        self.beta = beta  # for commmittee rep.
         self.rho = rho
 
     def one_round_v2(self):
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # rep
         if len(self.block_chain) > 1:
-            committee = committee_reputation(self.pool, self.committee_size, self.block_chain, self.T, self.H)  # rep
+            committee = committee_reputation(self.pool, self.committee_size, self.block_chain, self.T, self.H,
+                                             self.beta)  # rep
         else:
             committee = choose_committee_random(self.committee_size, self.pool)
 
@@ -116,15 +119,24 @@ class Simulation:
 
 
 if __name__ == '__main__':
+    start = timer()
+    corect_processes = 17
+    colluding_processes = 3
+    pool_siz = int(corect_processes + colluding_processes)
+    committee_size = int(pool_siz/2)
+    rounds = 10000
+    T = 1000
 
     # Committe selection (v2)
-    s1 = Simulation(20, 10, 100000)   # assume for now that new committee is selected for each new round
-    for x in range(0, 17):
+    s1 = Simulation(pool_siz, committee_size, rounds, T)   # assume for now that new committee is selected for each new
+    # round
+    for x in range(0, corect_processes):
         s1.pool.append(Process(len(s1.pool), 1, 1, 0))
-    for x in range(0, 3):
+    for x in range(0, colluding_processes):
         s1.pool.append(Process(len(s1.pool), 2, 2, 0))
     for r in range(s1.total_rounds):
         s1.one_round_v2()
+    '''    
     print(f"Committee selection (v2): After {s1.total_rounds} rounds")
     print("-------------")
     for p in s1.pool:
@@ -133,21 +145,40 @@ if __name__ == '__main__':
     for p in s1.pool:
         all_rewards += p.total_reward
     print(all_rewards/s1.total_rounds)
+    print()'''
+
+    cor_group = []
+    col_group = []
+    for p in s1.pool:
+        if p.type == 1:
+            cor_group.append(p.total_reward)
+        elif p.type == 2:
+            col_group.append(p.total_reward)
+    print(f"Committee selection (v2): After {s1.total_rounds} rounds (T:{s1.T})")
+    print(f"Correct: {corect_processes}\n"
+          f"Colluding: {colluding_processes}\n"
+          f"Pool Size: {pool_siz}\n"
+          f"Committee Size: {committee_size}")
+    print(f"Ideal average reward among processes, 1 round: {(s1.reward_pool+5/s1.pool_size)/(s1.reward_pool+5/pool_siz)}")
+    print(f"Average reward among correct processes, 1 round: {((sum(cor_group)/len(cor_group))/s1.total_rounds)/(s1.reward_pool+5/pool_siz)}")
+    print(f"Average reward among colluding processes, 1 round: {((sum(col_group)/len(col_group))/s1.total_rounds)/(s1.reward_pool+5/pool_siz)}")
     print()
 
-
+    end = timer()
+    print(f"Execution time: {(end - start)/60} minutes")
 
     # Rebop
-    s2 = Simulation(20, 10, 100000)   # assume for now that new committee is selected for each new round
+    s2 = Simulation(pool_siz, committee_size, rounds, T)   # assume for now that new committee is selected for each new round
 
-    for x in range(0, 17):
+    for x in range(0, corect_processes):
         s2.pool.append(Process(len(s2.pool), 1, 1, 0))
-    for x in range(0, 3):
+    for x in range(0, colluding_processes):
         s2.pool.append(Process(len(s2.pool), 2, 2, 0))
 
     for r in range(s2.total_rounds):
         s2.one_round_rebop()
-    print(f"Rebop: After {s2.total_rounds} rounds")
+
+    '''print(f"Rebop: After {s2.total_rounds} rounds")
     print("-------------")
     for p in s2.pool:
         print(p)
@@ -155,4 +186,31 @@ if __name__ == '__main__':
     for p in s2.pool:
         all_rewards += p.total_reward
     print(all_rewards/s2.total_rounds)
+    '''
 
+    cor_group_2 = []
+    col_group_2 = []
+    for p in s2.pool:
+        if p.type == 1:
+            cor_group_2.append(p.total_reward)
+        elif p.type == 2:
+            col_group_2.append(p.total_reward)
+
+    print(f"Rebop: After {s2.total_rounds} rounds, (T:{s2.T})")
+    print(f"Correct: {corect_processes}\n"
+          f"Colluding: {colluding_processes}\n"
+          f"Pool Size: {pool_siz}\n"
+          f"Committee Size: {committee_size}")
+    print(f"Ideal average reward among processes, 1 round: {((s2.reward_pool+5)/s2.pool_size)/((s2.reward_pool+5)/pool_siz)}")
+    print(f"Average reward among correct processes, 1 round: "
+          f"{((sum(cor_group_2)/len(cor_group_2))/s2.total_rounds)/((s2.reward_pool+5)/pool_siz)}")
+    print(f"Average reward among colluding processes, 1 round: "
+          f"{((sum(col_group_2)/len(col_group_2))/s2.total_rounds)/((s2.reward_pool+5)/pool_siz)}")
+    print()
+
+
+    end = timer()
+    print(f"Execution time: {(end - start)/60} minutes")
+
+
+# Byzantine
