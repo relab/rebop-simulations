@@ -159,9 +159,11 @@ if __name__ == '__main__':
           f"Colluding: {colluding_processes}\n"
           f"Pool Size: {pool_siz}\n"
           f"Committee Size: {committee_size}")
-    print(f"Ideal average reward among processes, 1 round: {(s1.reward_pool+5/s1.pool_size)/(s1.reward_pool+5/pool_siz)}")
-    print(f"Average reward among correct processes, 1 round: {((sum(cor_group)/len(cor_group))/s1.total_rounds)/(s1.reward_pool+5/pool_siz)}")
-    print(f"Average reward among colluding processes, 1 round: {((sum(col_group)/len(col_group))/s1.total_rounds)/(s1.reward_pool+5/pool_siz)}")
+    print(f"Ideal average reward among processes, 1 round: "
+          f"{(sum(cor_group) + sum(col_group))/(colluding_processes+corect_processes)}/")
+    print(f"Average reward among correct processes, 1 round: {(sum(cor_group)/(sum(cor_group) + sum(col_group))/corect_processes)}")
+    print(f"Average reward among colluding processes, 1 round: "
+          f"{(sum(col_group)/(sum(cor_group) + sum(col_group))/colluding_processes)}")
     print()
 
     end = timer()
@@ -201,11 +203,11 @@ if __name__ == '__main__':
           f"Colluding: {colluding_processes}\n"
           f"Pool Size: {pool_siz}\n"
           f"Committee Size: {committee_size}")
-    print(f"Ideal average reward among processes, 1 round: {((s2.reward_pool+5)/s2.pool_size)/((s2.reward_pool+5)/pool_siz)}")
-    print(f"Average reward among correct processes, 1 round: "
-          f"{((sum(cor_group_2)/len(cor_group_2))/s2.total_rounds)/((s2.reward_pool+5)/pool_siz)}")
+    print(f"Ideal average reward among processes, 1 round: "
+          f"{(sum(cor_group_2) + sum(col_group_2))/(colluding_processes+corect_processes)}/")
+    print(f"Average reward among correct processes, 1 round: {(sum(cor_group_2)/(sum(cor_group_2) + sum(col_group_2))/corect_processes)}")
     print(f"Average reward among colluding processes, 1 round: "
-          f"{((sum(col_group_2)/len(col_group_2))/s2.total_rounds)/((s2.reward_pool+5)/pool_siz)}")
+          f"{(sum(col_group_2)/(sum(cor_group_2) + sum(col_group_2))/colluding_processes)}")
     print()
 
 
