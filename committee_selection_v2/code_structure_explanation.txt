@@ -16,7 +16,8 @@ Simulation class in simulation.py:
 2 main methods: one_round() and distribute_reward()
 
 one_round:
-there are 3 different versions but only two are relevant one_round_rebop which is my version of arians original simulation
+there are 2 different versions but only two are relevant one_round_rebop which is my version of arians original
+simulation
 of rebop and one_round_v2 which includes selection of committee based on reputation. They both use the leader_reputation
  function to select a leader based on reputation but they differ on how they choose the committee. the origininal rebop
  has a constant committee and the v2 has committee selction based on reputation.

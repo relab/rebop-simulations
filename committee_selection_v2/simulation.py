@@ -34,8 +34,6 @@ class Simulation:
         else:
             committee = choose_committee_random(self.committee_size, self.pool)
 
-        # committee = self.choose_committee_random()  # random
-
         block = leader.propose_block(self.block_chain)  # committee leader proposes block
         block.committee_at_block = committee
 
@@ -56,38 +54,9 @@ class Simulation:
             block.signatures = block.initial_voters  # automatically confirms votes for genesis block
         self.com_counter += 1  # used for setting unique committee id
 
-    def one_round_rebop(self):  # no reputation, no committee selection, used to test
+    def one_round_rebop(self):  # leader reputation + random committee selection from pool, baseline
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # random leader
         committee = choose_committee_random(self.committee_size, self.pool)   # constant committee, original rebop
-
-        # com = Committee(self.com_counter, self.committee_size, leader, committee)
-
-        block = leader.propose_block(self.block_chain)  # committee leader proposes block
-        block.committee_at_block = committee
-
-        for validator in committee:  # committee members vote
-            if validator.id != leader.id:
-                validator.voting(block)
-
-        if len(block.initial_voters) >= (2*math.floor(self.committee_size/3)):  # checking if the enough com. members voted
-            self.block_chain.append(block)
-
-        if len(self.block_chain) > 1:  # leader collects votes for h-1
-            leader.leader_vote_collection(self.committee_size, self.block_chain)
-
-            self.distribute_reward()
-            # looks always at h-1, rewrds all the voters on h-1,
-            # and the leader of h earns a bonus for collecting the votes from h-1 and distributing the rewards to the
-            # voters on h-1
-        else:
-            block.signatures = block.initial_voters  # automatically confirms votes for genesis block
-        self.com_counter += 1  # used for setting unique committee id
-
-    def one_round_random(self):  # no reputation, no committee selection, used to test
-        leader = choose_leader_random(self.pool)  # random leader
-        committee = self.pool  # constant committee, original rebop
-
-        # com = Committee(self.com_counter, self.committee_size, leader, committee)
 
         block = leader.propose_block(self.block_chain)  # committee leader proposes block
         block.committee_at_block = committee
@@ -122,13 +91,13 @@ if __name__ == '__main__':
     start = timer()
     corect_processes = 17
     colluding_processes = 3
-    pool_siz = int(corect_processes + colluding_processes)
-    committee_size = int(pool_siz/2)
+    pool_size = int(corect_processes + colluding_processes)
+    committee_size = int(pool_size / 2)
     rounds = 10000
     T = 1000
 
     # Committe selection (v2)
-    s1 = Simulation(pool_siz, committee_size, rounds, T)   # assume for now that new committee is selected for each new
+    s1 = Simulation(pool_size, committee_size, rounds, T)   # assume for now that new committee is selected for each new
     # round
     for x in range(0, corect_processes):
         s1.pool.append(Process(len(s1.pool), 1, 1, 0))
@@ -157,10 +126,10 @@ if __name__ == '__main__':
     print(f"Committee selection (v2): After {s1.total_rounds} rounds (T:{s1.T})")
     print(f"Correct: {corect_processes}\n"
           f"Colluding: {colluding_processes}\n"
-          f"Pool Size: {pool_siz}\n"
+          f"Pool Size: {pool_size}\n"
           f"Committee Size: {committee_size}")
-    print(f"Ideal average reward among processes, 1 round: "
-          f"{(sum(cor_group) + sum(col_group))/(colluding_processes+corect_processes)}/")
+    # print(f"Ideal average reward among processes, 1 round: "
+    #      f"{(sum(cor_group) + sum(col_group))/(colluding_processes+corect_processes)}/")
     print(f"Average reward among correct processes, 1 round: {(sum(cor_group)/(sum(cor_group) + sum(col_group))/corect_processes)}")
     print(f"Average reward among colluding processes, 1 round: "
           f"{(sum(col_group)/(sum(cor_group) + sum(col_group))/colluding_processes)}")
@@ -169,8 +138,8 @@ if __name__ == '__main__':
     end = timer()
     print(f"Execution time: {(end - start)/60} minutes")
 
-    # Rebop
-    s2 = Simulation(pool_siz, committee_size, rounds, T)   # assume for now that new committee is selected for each new round
+    # Baseline: rebop + random committee
+    s2 = Simulation(pool_size, committee_size, rounds, T)   # assume for now that new committee is selected for each new round
 
     for x in range(0, corect_processes):
         s2.pool.append(Process(len(s2.pool), 1, 1, 0))
@@ -201,10 +170,10 @@ if __name__ == '__main__':
     print(f"Rebop: After {s2.total_rounds} rounds, (T:{s2.T})")
     print(f"Correct: {corect_processes}\n"
           f"Colluding: {colluding_processes}\n"
-          f"Pool Size: {pool_siz}\n"
+          f"Pool Size: {pool_size}\n"
           f"Committee Size: {committee_size}")
-    print(f"Ideal average reward among processes, 1 round: "
-          f"{(sum(cor_group_2) + sum(col_group_2))/(colluding_processes+corect_processes)}/")
+    # print(f"Ideal average reward among processes, 1 round: "
+    #      f"{(sum(cor_group_2) + sum(col_group_2))/(colluding_processes+corect_processes)}/")
     print(f"Average reward among correct processes, 1 round: {(sum(cor_group_2)/(sum(cor_group_2) + sum(col_group_2))/corect_processes)}")
     print(f"Average reward among colluding processes, 1 round: "
           f"{(sum(col_group_2)/(sum(cor_group_2) + sum(col_group_2))/colluding_processes)}")
