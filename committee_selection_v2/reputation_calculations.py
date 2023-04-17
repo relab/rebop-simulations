@@ -44,7 +44,7 @@ def leader_reputation(pool, block_chain, committee_size, T, H, alpha):
         print(reputation)
     r = random.choices(pool, weights=reputation, k=1)
     leader = r[0]
-    return leader  # this leader is then put as leader
+    return leader  # put as leader
 
 
 def choose_leader_random(pool):

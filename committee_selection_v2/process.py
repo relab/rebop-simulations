@@ -4,11 +4,14 @@ from block import Block
 
 
 class Process:
-    def __init__(self, id, type, group, target):
+    def __init__(self, id, group, target, no_vote=False, omit_vote=False):
         self.id = id
-        self.type = type
+        # self.type = type
         self.group = group
         self.target = target
+
+        self.no_vote = no_vote
+        self.omit_vote = omit_vote
 
         self.proposed_blocks = []
         self.last_block_proposed = 0  # the id of the last block proposed
@@ -27,6 +30,78 @@ class Process:
         self.proposed_blocks.append(b)
         return b
 
+    def __str__(self):
+        return f"ID: {self.id}, type: {type(self)}, group: {self.group} Total Reward: {self.total_reward}"
+
+
+
+
+class CorrectProcess(Process):
+    def voting(self, block):
+        block.initial_voters.append(self)
+
+    def leader_vote_collection(self, committe_size, block_chain, rho):
+        pre_block = block_chain[len(block_chain) - 2]
+        pre_block.signatures = pre_block.initial_voters
+
+
+class ColludingProcess(Process):
+    def voting(self, block):
+        if self.group != block.proposer.group:  # colluding
+            if random.randint(1, 2) == 1:
+                block.initial_voters.append(self)
+        else:  # always votes for block proposed by process in the same (colluding) group # TODO: look at it...
+            block.initial_voters.append(self)
+
+    def leader_vote_collection(self, committe_size, block_chain, rho):
+        pre_block = block_chain[len(block_chain) - 2]
+        all_removed = 0
+        limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
+        temp = sorted(pre_block.initial_voters, key=lambda v: v.total_reward, reverse=True)  # sorts list of init_voters by total_reward earned, descending
+        r = random.randint(0, 100)
+        if r < (rho*100):
+            for voter in temp:
+                if self.group == voter.group:
+                    pre_block.signatures.append(voter)
+                else:
+                    if all_removed < limit:  # need to add in sorting of the list of voters based on stake
+                        all_removed += 1
+                        continue
+                    else:
+                        pre_block.signatures.append(voter)
+        else:
+            pre_block.signatures = pre_block.initial_voters
+
+
+
+class ByzantineProcess(Process): # TODO: does rho also concern byzantine, looking at the paper its only referenced in
+    # section concerning colluding entities, or is it just 1
+    def voting(self, block):
+        if self.target != block.proposer.group and not self.no_vote:  # byzantine
+            block.initial_voters.append(self)
+
+    def leader_vote_collection(self, committe_size, block_chain, rho):
+        pre_block = block_chain[len(block_chain) - 2]
+        all_removed = 0
+        limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
+        temp = sorted(pre_block.initial_voters, key=lambda v: v.total_reward, reverse=True)  # sorts list of init_voters by total_reward earned, descending
+        r = random.randint(0, 100)
+        if self.omit_vote and r < (rho*100):
+            for voter in temp:
+                if self.target != voter.group:
+                    pre_block.signatures.append(voter)
+                else:
+                    if all_removed < limit:  # need to add in sorting of the list of voters based on stake
+                        all_removed += 1
+                        continue
+                    else:
+                        pre_block.signatures.append(voter)
+        else:
+            pre_block.signatures = pre_block.initial_voters
+
+
+
+'''
     def voting(self, block):  # they vote on the current block h
         if self.type == 1:  # correct
             self.correct_validator(block)
@@ -61,6 +136,7 @@ class Process:
     def byzantine_validator(self, block):
         if self.target != block.proposer.group:  # byzantine
             block.initial_voters.append(self)
+    
 
     def correct_leader(self, pre_block):
         pre_block.signatures = pre_block.initial_voters
@@ -92,6 +168,4 @@ class Process:
                     continue
                 else:
                     pre_block.signatures.append(voter)
-
-    def __str__(self):
-        return f"ID: {self.id}, type: {self.type}, group: {self.group} Total Reward: {self.total_reward}"
+'''
