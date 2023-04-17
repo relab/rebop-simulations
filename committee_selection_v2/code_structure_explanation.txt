@@ -50,8 +50,33 @@ T rounds, a percentage. feks .9 means he voted 9 out of 10 possible times.
 
 
 
+Simple Simulation:
+
+Rounds: 10.000
+T: 1000
+Correct: 17
+Colluding: 3
+Pool Size: 20
+Committee Size: 10
+
+Baseline v1: alpha: 1, beta: 0
+Average reward among correct processes, 1 round: 0.05405159919308808
+Average reward among colluding processes, 1 round: 0.027040937905834197
+
+Committee selection v2: alpha: 0, beta: 1
+Average reward among correct processes, 1 round: 0.05517511423900382
+Average reward among colluding processes, 1 round: 0.020674352645645044
+
+Committee selection (v3): alpha: 1, beta: 1
+Average reward among correct processes, 1 round: 0.056605567186036945
+Average reward among colluding processes, 1 round: 0.012568452612457327
 
 
+Committee selection (v3): alpha: 0, beta: 0
+Average reward among correct processes, 1 round: 0.05303834594032522
+Average reward among colluding processes, 1 round: 0.03278270633815707
+
+Execution time: 0.83709778 minutes
 
 
 
