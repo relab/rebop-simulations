@@ -50,7 +50,7 @@ T rounds, a percentage. feks .9 means he voted 9 out of 10 possible times.
 
 
 
-Simple Simulation:
+# Simple Simulation:
 
 Rounds: 10.000
 T: 1000
