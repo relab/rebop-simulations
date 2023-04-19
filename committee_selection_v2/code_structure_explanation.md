@@ -79,7 +79,137 @@ Average reward among colluding processes, 1 round: 0.03278270633815707
 Execution time: 0.83709778 minutes
 
 
+Sim 2
 
+Rounds: 10.000
+T: 1000
+Correct: 17
+Colluding: 3
+Pool Size: 20
+Committee Size: 10
+
+Baseline v1: alpha: 1, beta: 0
+Average reward among correct processes, 1 round: 0.05401001173435555
+Average reward among colluding processes, 1 round: 0.027276600171985212
+
+Committee selection v2: alpha: 0, beta: 1
+Average reward among correct processes, 1 round: 0.05523126675746138
+Average reward among colluding processes, 1 round: 0.02035615504105218
+
+Committee selection (v3): alpha: 1, beta: 1
+Average reward among correct processes, 1 round: 0.05626814293185125
+Average reward among colluding processes, 1 round: 0.014480523386176239
+
+
+Committee selection (v3): alpha: 0, beta: 0
+Average reward among correct processes, 1 round: 0.05296098059408005
+Average reward among colluding processes, 1 round: 0.03322110996687969
+
+Execution time: 0.86805053 minutes
+
+
+Sim 4:
+
+Rounds: 30.000
+T: 5000
+Correct: 17
+Colluding: 3
+Pool Size: 20
+Committee Size: 10
+
+Baseline v1: alpha: 1, beta: 0
+Average reward among correct processes, 1 round: 0.05402479743263131
+Average reward among colluding processes, 1 round: 0.02719281454842258
+
+Committee selection v2: alpha: 0, beta: 1
+Average reward among correct processes, 1 round: 0.05499782503445033
+Average reward among colluding processes, 1 round: 0.02167899147144813
+
+Committee selection (v3): alpha: 1, beta: 1
+Average reward among correct processes, 1 round: 0.056635115202193644
+Average reward among colluding processes, 1 round: 0.012401013854236004
+
+Committee selection (v3): alpha: 0, beta: 0
+Average reward among correct processes, 1 round: 0.05296088382499414
+Average reward among colluding processes, 1 round: 0.033221658325033175
+
+Execution time: 12.290314305 minutes
+
+
+
+Sim 5:
+
+Rounds: 10000
+T: 1000
+Correct: 17
+Colluding: 3
+Pool Size: 20
+Committee Size: 10
+Alpha: 1
+Beta: 1
+Number of simulation: 25
+
+
+Correct Processes:
+rho(om), sigma(nv) : reward
+(0.0, 0.0)  :  0.049998277138638234
+(0.0, 0.25)  :  0.051492081758973976
+(0.0, 0.5)  :  0.05281440731330255
+(0.0, 0.75)  :  0.054224723526107396
+(0.0, 1)  :  0.055430530825969465
+(0.25, 0.0)  :  0.04991967784213394
+(0.25, 0.25)  :  0.051454914287836225
+(0.25, 0.5)  :  0.0528230916551261
+(0.25, 0.75)  :  0.054437020777352255
+(0.25, 1)  :  0.055666044128755886
+(0.5, 0.0)  :  0.049889102555713744
+(0.5, 0.25)  :  0.051499214213804996
+(0.5, 0.5)  :  0.053208997926158706
+(0.5, 0.75)  :  0.054611212310595666
+(0.5, 1)  :  0.0556814295986532
+(0.75, 0.0)  :  0.05003881740715087
+(0.75, 0.25)  :  0.05176837545032347
+(0.75, 0.5)  :  0.053307190417169324
+(0.75, 0.75)  :  0.05458758716563485
+(0.75, 1)  :  0.05596498025152649
+(1, 0.0)  :  0.050217146564596436
+(1, 0.25)  :  0.05208134080937327
+(1, 0.5)  :  0.05354829867407174
+(1, 0.75)  :  0.05489065215005674
+(1, 1)  :  0.056474641728545216
+
+Colluding Processes:
+rho(om), sigma(nv) : reward
+(0.0, 0.0)  :  0.05000976288105
+(0.0, 0.25)  :  0.04154487003248075
+(0.0, 0.5)  :  0.034051691891285554
+(0.0, 0.75)  :  0.02605990001872475
+(0.0, 1)  :  0.01922699198617304
+(0.25, 0.0)  :  0.050455158894574303
+(0.25, 0.25)  :  0.0417554857022614
+(0.25, 0.5)  :  0.034002480620952104
+(0.25, 0.75)  :  0.024856882261670574
+(0.25, 1)  :  0.017892416603716644
+(0.5, 0.0)  :  0.05062841885095545
+(0.5, 0.25)  :  0.041504452788438374
+(0.5, 0.5)  :  0.03181567841843399
+(0.5, 0.75)  :  0.023869796906624597
+(0.5, 1)  :  0.01780523227429853
+(0.75, 0.0)  :  0.04978003469281175
+(0.75, 0.25)  :  0.039979205781500333
+(0.75, 0.5)  :  0.03125925430270717
+(0.75, 0.75)  :  0.024003672728069164
+(0.75, 1)  :  0.016198445241349873
+(1, 0.0)  :  0.04876950280062022
+(1, 0.25)  :  0.03820573541355146
+(1, 0.5)  :  0.029892974180260184
+(1, 0.75)  :  0.02228630448301183
+(1, 1)  :  0.013310363538243816
+
+Execution time: 5.593584471666666 minutes
+
+
+Process finished with exit code 0
 
 
 
