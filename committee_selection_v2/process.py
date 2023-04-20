@@ -2,6 +2,8 @@ import random
 import math
 from block import Block
 
+# TODO: find a solution for rho vs omit_vite and sigma vs no_vote, in process.py
+
 
 class Process:
     def __init__(self, id, group, target, no_vote=False, omit_vote=False):
