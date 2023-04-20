@@ -1,6 +1,6 @@
 import random
 import math
-from block import Block
+from simulation_setup.block import Block
 
 # TODO: find a solution for rho vs omit_vite and sigma vs no_vote, in process.py
 

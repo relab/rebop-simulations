@@ -1,6 +1,6 @@
 from timeit import default_timer as timer
-from process import CorrectProcess, ByzantineProcess
-from setup import Setup
+from simulation_setup.process import CorrectProcess, ByzantineProcess
+from simulation_setup.setup import Setup
 
 # TODO: add message loss
 # TODO: look at byz fraction vs ideal

@@ -1,5 +1,5 @@
 import math
-from reputation_calculations import committee_reputation, leader_reputation, choose_committee_random
+from simulation_setup.reputation_calculations import committee_reputation, leader_reputation, choose_committee_random
 
 # TODO: Edit explanation.md file
 

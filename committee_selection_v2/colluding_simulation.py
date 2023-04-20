@@ -1,8 +1,8 @@
 from timeit import default_timer as timer
 import matplotlib.pyplot as plt
 import numpy as np
-from setup import Setup
-from process import CorrectProcess, ColludingProcess
+from simulation_setup.setup import Setup
+from simulation_setup.process import CorrectProcess, ColludingProcess
 
 # TODO: find a solution for rho vs omit_vite and sigma vs no_vote, in process.py
 
