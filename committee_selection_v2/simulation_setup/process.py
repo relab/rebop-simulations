@@ -6,14 +6,14 @@ from simulation_setup.block import Block
 
 
 class Process:
-    def __init__(self, id, group, target, no_vote=False, omit_vote=False):
+    def __init__(self, id, group, target, rho=1, sigma=1, message_loss=0):
         self.id = id
-        # self.type = type
         self.group = group
         self.target = target
 
-        self.no_vote = no_vote
-        self.omit_vote = omit_vote
+        self.rho = rho
+        self.sigma = sigma
+        self.message_loss = message_loss
 
         self.proposed_blocks = []
         self.last_block_proposed = 0  # the id of the last block proposed
@@ -39,7 +39,11 @@ class Process:
 
 class CorrectProcess(Process):
     def voting(self, block, sigma):
-        block.initial_voters.append(self)
+        r = random.randint(0, 100)
+        if r < (self.message_loss*100):
+            pass
+        else:  #
+            block.initial_voters.append(self)
 
     def leader_vote_collection(self, committe_size, block_chain, rho):
         pre_block = block_chain[len(block_chain) - 2]
@@ -75,10 +79,12 @@ class ColludingProcess(Process):  # uses rho and sigma and not omit/novote
             pre_block.signatures = pre_block.initial_voters
 
 
-
-class ByzantineProcess(Process):  # uses omit_vote and no_vote and not rho/sigma
+# TODO: add in sigma/rho into
+class ByzantineProcess(Process):  # uses rho/sigma and not omit_vote and no_vote
     def voting(self, block, sigma):
-        if self.target != block.proposer.group and not self.no_vote:  # byzantine
+        if self.target == block.proposer.group and self.sigma == 1:  # byzantine
+            pass
+        else:
             block.initial_voters.append(self)
 
     def leader_vote_collection(self, committe_size, block_chain, rho):
@@ -87,7 +93,7 @@ class ByzantineProcess(Process):  # uses omit_vote and no_vote and not rho/sigma
         limit = (math.floor(committe_size/3)) - (committe_size - len(pre_block.initial_voters))  # should be len(committee)
         temp = sorted(pre_block.initial_voters, key=lambda v: v.total_reward, reverse=True)  # sorts list of init_voters by total_reward earned, descending
         r = random.randint(0, 100)
-        if self.omit_vote:
+        if self.rho == 1:
             for voter in temp:
                 if self.target != voter.group:
                     pre_block.signatures.append(voter)

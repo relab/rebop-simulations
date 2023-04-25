@@ -5,7 +5,7 @@ from simulation_setup.reputation_calculations import committee_reputation, leade
 
 
 class Setup:
-    def __init__(self, pool_size, committee_size, t_rounds, T, c=1, alpha=0, beta=10, rho=0, sigma=1):
+    def __init__(self, pool_size, committee_size, t_rounds, T, C=1, alpha=0, beta=10, rho=0, sigma=1):
         self.pool_size = pool_size  # total number of processes committee is choosen from, pool size
         self.committee_size = committee_size
         self.total_rounds = t_rounds
@@ -16,7 +16,7 @@ class Setup:
         self.reward_pool = 100
 
         self.T = T  # number of relevant rounds, last T number of rounds used to calculate reputation
-        self.c = c  # Number of rounds before new committee is selected, feks c = 5, changed every fifth round
+        self.C = C  # Number of rounds before new committee is selected, feks C = 5, changed every fifth round
 
         self.H = 100
         self.alpha = alpha  # for leader rep.
@@ -27,7 +27,7 @@ class Setup:
     def one_round(self):
         self.com_counter += 1
         leader = leader_reputation(self.pool, self.block_chain, self.committee_size, self.T, self.H, self.alpha)  # rep
-        if self.com_counter % self.c == 0:
+        if self.com_counter % self.C == 0:
             if len(self.block_chain) > 1:
                 committee = committee_reputation(self.pool, self.committee_size, self.block_chain, self.T, self.H,
                                                  self.beta)  # rep
