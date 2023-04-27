@@ -144,12 +144,12 @@ def read_collusion_data(number_of_sims):
 def colluding_plot(data_list):
     fig, ax = plt.subplots()
     
-    min_val, max_val = 0, 15
+    min_val, max_val = 0, 3
 
-    intersection_matrix = np.random.randint(1, 2, size=(3, 3))
+    intersection_matrix = np.random.randint(1, 2, size=(max_val,max_val))
     for point in data_list:
-        i = point["rho"]*2
-        j = point["sigma"]*2
+        i = point["rho"]*(max_val-1)
+        j = point["sigma"]*(max_val-1)
         intersection_matrix[i,j] = point["delta"]
     
     
@@ -157,8 +157,8 @@ def colluding_plot(data_list):
 
     ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
 
-    for i in range(3):
-        for j in range(3):
+    for i in range(max_val):
+        for j in range(max_val):
             c = intersection_matrix[j,i] # pulling out a value from a ready made matrix
             ax.text(i, j, str(c)) # i=rho, j=sigma, c=verdien på det punktet
 
