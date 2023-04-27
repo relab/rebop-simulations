@@ -197,22 +197,6 @@ def main():
     for exp in data:
       colluding_plot(data[exp])
   
-    fig, ax = plt.subplots()
-
-    min_val, max_val = 0, 15
-
-    intersection_matrix = np.random.randint(0, 10, size=(max_val, max_val))
-    print(intersection_matrix)
-
-    ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
-
-    for i in range(15):
-        for j in range(15):
-            c = intersection_matrix[j,i] # pulling out a value from a ready made matrix
-            ax.text(i, j, str(c)) # i=rho, j=sigma, c=verdien på det punktet
-
-    plt.show()
-
 
 if __name__ == '__main__':
     #colluding_sim, number_of_sims = complete_culloding_sim()
