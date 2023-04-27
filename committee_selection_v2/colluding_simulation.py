@@ -148,19 +148,15 @@ def colluding_plot(data_list):
 
     intersection_matrix = np.random.randint(1, 2, size=(max_val,max_val))
     for point in data_list:
-        i = point["rho"]*(max_val-1)
-        j = point["sigma"]*(max_val-1)
+        i = int(point["rho"]*(max_val-1))
+        j = int(point["sigma"]*(max_val-1))
         intersection_matrix[i,j] = point["delta"]
+        ax.text(i, j, str(point["delta"])) # i=rho, j=sigma, c=verdien på det punktet
     
     
     print(intersection_matrix)
 
     ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
-
-    for i in range(max_val):
-        for j in range(max_val):
-            c = intersection_matrix[j,i] # pulling out a value from a ready made matrix
-            ax.text(i, j, str(c)) # i=rho, j=sigma, c=verdien på det punktet
 
     plt.show()
     
