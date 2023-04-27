@@ -197,6 +197,10 @@ def colluding_plot(data_list):
 
 
 def main():
+    data = read_collusion_data(2)
+    for exp in data:
+      colluding_plot(data[exp])
+  
     fig, ax = plt.subplots()
 
     min_val, max_val = 0, 15
