@@ -120,6 +120,7 @@ def read_collusion_data(number_of_sims):
             liste = [int(row[0]), alpha_beta, float(row[5]), float(row[6]), colluding_delta]
             data_list[int(row[0])].append(liste)
         return data_list
+        # liste = [sim_id, tuple(alpha_beta), rho, sigma, colluding_delta]
 
 
 
@@ -132,8 +133,19 @@ def colluding_plot(data_list):
     # Three levels of lists:
     # data_list --> list holding data of one sim --> list containing one data point in a specific sim
 
+    number_of_sim = len(data_list)
+    rewards_delta = []
+    rho_sigma = []
     matrix_data = []
-    for data in data_list[0]:
+
+    for i in range(number_of_sim):
+        rewards_delta.append([])
+        rho_sigma.append([])
+        matrix_data.append([])
+
+    for sim in data_list:
+        for data in sim:
+
 
 
 
@@ -176,6 +188,7 @@ if __name__ == '__main__':
     #colluding_sim, number_of_sims = complete_culloding_sim()
     #write_collusion_data(colluding_sim)
     print(read_collusion_data(10))
+    main()
 
 
 
