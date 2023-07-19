@@ -114,39 +114,63 @@ def read_collusion_data(number_of_sims):
         for i in range(number_of_sims):
             data_list.append([])
 
+        data = {}
+        
+        for row in sim_reader:
+            id = row[0]
+            list = data.get(id,[])
+            
+            colluding_delta = float(row[2]) - float(row[1])
+            
+            list.append({
+              "rho": float(row[5]),
+              "sigma": float(row[6]),
+              "delta": colluding_delta
+            })
+            data[id]=list
+        return data
+        
+        '''
         for row in sim_reader:
             alpha_beta = (row[3], row[4])
             colluding_delta = float(row[2]) - float(row[1])
             liste = [int(row[0]), alpha_beta, float(row[5]), float(row[6]), colluding_delta]
             data_list[int(row[0])].append(liste)
-        return data_list
-        # liste = [sim_id, tuple(alpha_beta), rho, sigma, colluding_delta]
-
+        return data_list 
+        '''
 
 
 
 def colluding_plot(data_list):
+    fig, ax = plt.subplots()
+
+    min_val, max_val = 0, 3
+
+    intersection_matrix = np.random.randint(1, 2, size=(max_val,max_val))
+    for point in data_list:
+        i = int(point["rho"]*(max_val-1))
+        j = int(point["sigma"]*(max_val-1))
+        intersection_matrix[i,j] = point["delta"]
+        ax.text(i, j, str(point["delta"])) # i=rho, j=sigma, c=verdien på det punktet
+
+
+    print(intersection_matrix)
+
+    ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
+
+    plt.show()
+
+    '''
+    ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
+  
     for i in range(0, len(data_list)):
         if data_list[i] is False:
             del data_list[i]
-
     # Three levels of lists:
     # data_list --> list holding data of one sim --> list containing one data point in a specific sim
-
-    number_of_sim = len(data_list)
-    rewards_delta = []
-    rho_sigma = []
     matrix_data = []
-
-    for i in range(number_of_sim):
-        rewards_delta.append([])
-        rho_sigma.append([])
-        matrix_data.append([])
-
-    for sim in data_list:
-        for data in sim:
-
-
+    for data in data_list[0]:
+    '''
 
 
 
@@ -162,36 +186,17 @@ def colluding_plot(data_list):
     in each of the lists as the number of collumns, 
     ax.text(i, j, str(c)) # i=rho, j=sigma, c=verdien på det punktet
      
-
     '''
 
 
 def main():
-    fig, ax = plt.subplots()
-
-    min_val, max_val = 0, 15
-
-    intersection_matrix = np.random.randint(0, 10, size=(max_val, max_val))
-    print(intersection_matrix)
-
-    ax.matshow(intersection_matrix)  # cmap=plt.cm.blues
-
-    for i in range(15):
-        for j in range(15):
-            c = intersection_matrix[j,i] # pulling out a value from a ready made matrix
-            ax.text(i, j, str(c)) # i=rho, j=sigma, c=verdien på det punktet
-
-    plt.show()
+    data = read_collusion_data(2)
+    for exp in data:
+      colluding_plot(data[exp])
 
 
 if __name__ == '__main__':
     #colluding_sim, number_of_sims = complete_culloding_sim()
     #write_collusion_data(colluding_sim)
     print(read_collusion_data(10))
-    main()
-
-
-
-
-
 
